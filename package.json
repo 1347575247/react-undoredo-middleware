@@ -10,7 +10,8 @@
   "keywords": [
     "undo",
     "redo",
-    "undo/redo"
+    "undo/redo",
+    "middleware"
   ],
   "author": "LunduoCai",
   "license": "MIT",
