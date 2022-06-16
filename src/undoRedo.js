@@ -1,57 +1,52 @@
 
-import bindActionCreators from "./bindActionCreators"
+import {bindActionCreators, cacheCustomUndoHandlers, cacheCustomRedoHandlers} from "./helpers"
+import {undoRedoActions} from "./actions"
 
-const __DEV__ = process.env.NODE_ENV === "development"
-
-// 撤销重做中间件
-function createUndoRedoMiddleware (extraAgument = {}) {
+function createUndoRedoMiddleware (extraAugments) {
 	return () => dispatch => action => {
 		/**
-     * @param {Int} index: 添加组件的新索引/粘贴组件的新索引/拖拽排序的旧索引,
-     * @param {Array} path: 修改配置面板的redux修改路径，
-     * @param {primitive} newValue: 修改配置面板的新值,
-     * @param {primitive} oldValue: 修改配置面板的旧值
+     * @param {Int} index: Add new Item(newIndex)/paste Item(new Index)/Drag to resort(oldIndex)
+     * @param {Array} path: redux modify path
+     * @param {primitive} newValue: [redux modify path]'s newValue
+     * @param {primitive} oldValue: [redux modify path]'s oldValue
+     * @param {string} $$UNDO_REDO_TYPE: action Type that supports undo/redo
      */
 		const {index, path, newValue, oldValue, $$UNDO_REDO_TYPE} = action.payload || {}
 
-		// redux中的action名称
-		const ADD_INTO_HISTORY_ACTION = extraAgument.ADD_INTO_HISTORY_ACTION
+		// undo/redo hanlder defined by user
+		const {customUndoHandlers = {}, customRedoHandlers = {}} = extraAugments
+		const customOptions = action.customOptions || {}
 
-		if (!ADD_INTO_HISTORY_ACTION) {
-			if (__DEV__) {
-				console.error(`
-          undoRedoMiddleware must with extraArgument, 
-          which must contains action named ADD_INTO_HISTORY_ACTION
-        `)
-			}
-		}
+		// cache custom handlers
+		cacheCustomUndoHandlers(customUndoHandlers)
+		cacheCustomRedoHandlers(customRedoHandlers)
 
-		// 添加到历史记录的action
 		const ADD_INTO_HISTORY = (
-			ADD_INTO_HISTORY_ACTION
-      && $$UNDO_REDO_TYPE
-      && bindActionCreators(ADD_INTO_HISTORY_ACTION, dispatch)
+			$$UNDO_REDO_TYPE &&
+      bindActionCreators(undoRedoActions.DEFAULT_ADD_HISTORY, dispatch)
 		) || (() => {})
 
 		const params = {
 			type: $$UNDO_REDO_TYPE,
-			index: index || -1, //  添加组件的索引/拖拽排序时的旧索引
-			path: path || [], // 修改配置面板时的路径
-			newValue: newValue || false, // 修改配置面板时的新值
-			oldValue: oldValue || false, // 修改配置面板时的旧值
-			cacheItem: null // 被缓存起来的项目，如撤销某个新增项后需缓存这个项目，用于重做时取出来用
+			index: index || -1,
+			path: path || [],
+			newValue: newValue || false,
+			oldValue: oldValue || false,
+
+			// undo actions' removed item, somtimes need to cache it
+			cacheItem: null,
+			...customOptions
 		}
 
 		ADD_INTO_HISTORY(params)
 
-		// 业务dispatch
 		return dispatch(action)
 	}
 }
 
 const undoRedo = createUndoRedoMiddleware()
 
-// 绑定一个工厂方法，用户可以通过注入参数到中间件完成自定义
+// bind a factory function for user to define a custom middleware
 undoRedo.withExtraArgument = createUndoRedoMiddleware
 
 export default undoRedo

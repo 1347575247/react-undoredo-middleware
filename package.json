@@ -1,6 +1,6 @@
 {
   "name": "react-undoredo-middleware",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A generic undo-redo middleware that can be used when you need to support the undo/redo function in your app",
   "main": "./src/index.js",
   "scripts": {
@@ -24,5 +24,8 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:1347575247/react-undoredo-middleware.git"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
