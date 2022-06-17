@@ -1,7 +1,6 @@
 import _ from "lodash"
 import {isHistory} from "./helpers"
 
-// built-in types
 const undoRedoTypes = {
 	// service type(built-in action type)
 	ADD_NEW_ITEM: "ADD_NEW_ITEM",
@@ -45,6 +44,7 @@ const undoRedoHandlers = {
 		const {undoStack} = state
 		const undoAction = undoStack.pop()
 		const undoActionType = undoAction && undoAction.type
+		undoAction && state.redoStack.push(undoAction)
 
 		// undo actions' removed item, somtimes need to cache it
 		let undoItem = null
@@ -53,6 +53,8 @@ const undoRedoHandlers = {
 		if (undoActionType in customUndoHandlers) {
 			const undoHandler = customUndoHandlers[undoActionType]
 			const _state = undoHandler(state, undoAction, undoItem)
+
+			// console.log("---undo state---", _state)
 			return _state
 		}
 
@@ -89,8 +91,6 @@ const undoRedoHandlers = {
 			default:
 				break
 		}
-		undoAction && state.redoStack.push(undoAction)
-
 		state.selectedKey = ""
 		return {
 			...state
@@ -106,6 +106,8 @@ const undoRedoHandlers = {
 		if (redoActionType in customRedoHandlers) {
 			const redoHandler = customRedoHandlers[redoActionType]
 			const _state = redoHandler(state, redoAction)
+
+			// console.log("---redo state---", _state)
 			return _state
 		}
 
@@ -147,7 +149,6 @@ const undoRedoHandlers = {
 	}
 }
 
-// built-in actions
 const undoRedoActions = {
 	/**
    * 撤销行为

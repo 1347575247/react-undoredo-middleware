@@ -1,6 +1,6 @@
 // let undoRedoMiddleware = require("./undoRedo")
-import undoRedoMiddleware from "./undoRedo"
-import Types from "./types"
+import undoRedoMiddleware from "./undoRedo.test"
+import {undoRedoTypes,undoRedoActions,undoRedoHandlers} from '../actions'
 
 describe("undoredo middleware", () => {
 	const doDispatch = () => {}
@@ -32,7 +32,7 @@ describe("undoredo middleware", () => {
 			it("must dispatch to add into redux history when $$UNDO_REDO_TYPE is set", done => {
 				const actionHandler = nextHandler(doDispatch)
 
-				actionHandler({payload: {$$UNDO_REDO_TYPE: Types.ADD_NEW_ITEM}})
+				actionHandler({payload: {$$UNDO_REDO_TYPE: 'paste'}})
 
 				done()
 			})
