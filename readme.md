@@ -132,7 +132,7 @@ export default connect(
 
 In order to handle with other complicated service. except $$UNDO_REDO_TYPE, we can add more options to the payload. 
 
-```
+```json
 {
 	$$UNDO_REDO_TYPE,
 	index, 
@@ -144,7 +144,7 @@ In order to handle with other complicated service. except $$UNDO_REDO_TYPE, we c
 
 such as:
 
-```
+```html
 <button onClick={() => Decrement({$$UNDO_REDO_TYPE: 'minus', index: 0, path: [], newValue: 0, oldValue: -1})}>-</button><br/>
 ```
 
