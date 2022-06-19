@@ -95,15 +95,21 @@ export default store
 
 ### 2.Use in Component
 
+#### 2.1 Base usage
+
 ```js
 import React from 'react';
 import {connect} from 'react-redux'
+import CounterActions from '../store/Modules/counter/actions'
 import {undoRedoActions} from 'react-undoredo-middleware'
 
 const Counter = (props) => {
-  const {UNDO_ACTION, REDO_ACTION} = props
+  const {counter, Increment, Decrement, UNDO_ACTION, REDO_ACTION} = props
   return (
     <div>
+      {counter}
+      <button onClick={() => Increment({$$UNDO_REDO_TYPE: 'add'})}>+</button>
+      <button onClick={() => Decrement({$$UNDO_REDO_TYPE: 'minus'})}>-</button><br/>
       <button onClick={() => UNDO_ACTION()}>undo</button>
       <button onClick={() => REDO_ACTION()}>redo</button>
     </div>
@@ -112,13 +118,55 @@ const Counter = (props) => {
 
 export default connect(
   state => ({
-    // your state
+    counter: state.Counter.value
   }),
   {
-   	// other actions
+    ...CounterActions,
     ...undoRedoActions
   }
 )(Counter);
+
+```
+
+#### 2.2 more options
+
+In order to handle with other complicated service. except $$UNDO_REDO_TYPE, we can add more options to the payload. 
+
+```
+{
+	$$UNDO_REDO_TYPE,
+	index, 
+	path, 
+	newValue, 
+	oldValue
+}
+```
+
+such as:
+
+```
+<button onClick={() => Decrement({$$UNDO_REDO_TYPE: 'minus', index: 0, path: [], newValue: 0, oldValue: -1})}>-</button><br/>
+```
+
+those options will cache into undoStack:
+
+![image-20220619230017839](C:\Users\Acer\AppData\Roaming\Typora\typora-user-images\image-20220619230017839.png)
+
+get those args in custom undo/redo handler:
+
+```js
+const redoHandlers = {
+ /**
+  * 
+  * @param {*} state redux state 
+  * @param {*} undoAction when undo something, we need to cache it to the redoAction
+  */
+ add: (state, redoAction) => {
+ 	const {index, path, newValue, oldValue, cacheItem} = redoAction
+	// handle complicated situation
+	return state
+  }
+}
 ```
 
 See the [package source](https://github.com/1347575247/react-undoredo-middleware) for more details.
