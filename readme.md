@@ -1,6 +1,6 @@
 ## Introduction
 
-![虚拟列表](https://user-images.githubusercontent.com/45328460/174484654-a68dfad7-f895-4882-b9aa-cbb4a4972693.gif)
+<div align=center><img width="350" src="https://user-images.githubusercontent.com/45328460/174484654-a68dfad7-f895-4882-b9aa-cbb4a4972693.gif"/></div>
 
 This is a middleware base on redux. You don't need to worry about your undo/redo code and the service code mess up. when some opearation like **add new item, paste item, drag item to resort**, .etc. you just need to add a sign named **$$UNDO_REDO_TYPE** to your redux action's payload, talk to the middleware that this operation is supporting undo/redo features.
 
