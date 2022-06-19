@@ -150,7 +150,7 @@ such as:
 
 those options will cache into undoStack:
 
-![image-20220619230017839](C:\Users\Acer\AppData\Roaming\Typora\typora-user-images\image-20220619230017839.png)
+<div align=center><img width="350" src="[https://user-images.githubusercontent.com/45328460/174484654-a68dfad7-f895-4882-b9aa-cbb4a4972693.gif](https://user-images.githubusercontent.com/45328460/174487756-444b14ef-5e53-4983-a006-7298383cbc1f.png)"/></div>
 
 get those args in custom undo/redo handler:
 
